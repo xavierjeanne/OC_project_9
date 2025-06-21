@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Mon site{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h1>Bienvenue</h1>
+    </header>
+
+    <main>
+        {% block content %}
+        Contenu par défaut
+        {% endblock %}
+        {% if user.is_authenticated %}
+            <p>Vous êtes connecté en tant que {{ request.user }}.</p>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                        <button type="submit">Se déconnecter</button>
+                </form>
+        {% endif %}
+    </main>
+</body>
+</html>
