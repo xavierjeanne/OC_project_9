@@ -10,7 +10,7 @@ class Ticket(models.Model):
     title = models.CharField(max_length=255)
     content = models.TextField()
     image = models.ImageField(
-        upload_to='review_images/',
+        upload_to='ticket_images/',
         null=True,
         blank=True
     ) 
