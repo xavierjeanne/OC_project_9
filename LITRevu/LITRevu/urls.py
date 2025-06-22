@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 import reviews.views
+import authentication.views
 from django.contrib.auth.views import (
     LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView)
 
@@ -36,4 +37,5 @@ urlpatterns = [
          name='password_change_done'
          ),
     path('home/', reviews.views.home, name='home'),
+    path('signup/',authentication.views.signup_page, name='signup')
 ]
