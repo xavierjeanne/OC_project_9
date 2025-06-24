@@ -92,7 +92,7 @@ def create_ticket_review(request):
     else:
         ticket_form = TicketForm()
         review_form = ReviewForm()
-    return render(request, 'reviews/create_ticket_review.html', {
+    return render(request, 'tickets/create_ticket_review.html', {
         'ticket_form': ticket_form,
         'review_form': review_form
     })
