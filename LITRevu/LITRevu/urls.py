@@ -42,11 +42,24 @@ urlpatterns = [
     path('signup/', authentication.views.signup_page, name='signup'),
     path('ticket/add/', tickets.views.create_ticket, name='create_ticket'),
     path('ticket/<int:ticket_id>/edit/',
-         tickets.views.update_ticket,
-         name='update_ticket'),
+         tickets.views.edit_ticket,
+         name='edit_ticket'),
     path('ticket/<int:ticket_id>/delete/',
          tickets.views.delete_ticket,
          name='delete_ticket'),
+    path('review/create/',
+         tickets.views.create_ticket_review,
+         name='create_ticket_review'),
+    path('review/<int:review_id>/edit/',
+         tickets.views.edit_review,
+         name='edit_review'),
+    path('review/<int:review_id>/delete/',
+         tickets.views.delete_review,
+         name='delete_review'),
+    path('ticket/<int:ticket_id>/review/',
+         tickets.views.create_review_for_ticket,
+         name='create_review_for_ticket'),
+
 ]
 
 if settings.DEBUG:
