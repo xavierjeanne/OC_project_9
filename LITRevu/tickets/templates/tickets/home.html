@@ -1,59 +1,51 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <p>Vous êtes connecté, {{ user.username }} !</p>
-    <a href="{% url 'password_change' %}">Changer de mot de passe</a> 
+  <p>Vous êtes connecté, {{ user.username }} !</p>
 
-    <h2>Créer un nouveau ticket</h2>
-    <a href="{% url 'create_ticket' %}">Créer un billet</a>
-    <a href="{% url 'create_ticket_review' %}">Créer un ticket + critique</a>
-    <a href="{% url 'follows' %}">Gérer vos abonnements</a>
+  <a href="{% url 'password_change' %}">Changer de mot de passe</a>
+  <a href="{% url 'create_ticket' %}">Créer un billet</a>
+  <a href="{% url 'create_ticket_review' %}">Créer un ticket + critique</a>
+  <a href="{% url 'follows' %}">Gérer vos abonnements</a>
 
-    <h2>Tickets</h2>
-    {% if tickets %}
-        <ul>
-            {% for ticket in tickets %}
-                <li>
-                    <strong>{{ ticket.title }}</strong> - {{ ticket.content|truncatechars:100 }}<br>
-                    <small>Posté par {{ ticket.author.username }} le {{ ticket.created_at|date:"d/m/Y H:i" }}</small><br>
-                    {% if ticket.author == user %}
-                        <a href="{% url 'edit_ticket' ticket.id %}">Modifier</a> |
-                        <form action="{% url 'delete_ticket' ticket.id %}" method="post" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" style="background:none;border:none;color:red;">Supprimer</button>
-                        </form>
-                    {% endif %}
-
-                    {% if ticket.image %}
-                        <img src="{{ ticket.image.url }}" alt="Image du ticket" style="max-width: 300px;">
-                    {% endif %}
-                    <br><a href="{% url 'create_review_for_ticket' ticket.id %}">Ajouter une critique</a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Aucun billet pour le moment.</p>
-    {% endif %}
-
-    <h2>Critiques</h2>
-    {% if reviews %}
-        <ul>
-            {% for review in reviews %}
-                <li>
-                    <strong>{{ review.headline }}</strong> ({{ review.rating }}/5)<br>
-                    <small>Par {{ review.author.username }} le {{ review.time_created|date:"d/m/Y H:i" }}</small><br>
-                    {{ review.body|linebreaks }}<br>
-                    {% if review.author == user %}
-                        <a href="{% url 'edit_review' review.id %}">Modifier</a> |
-                        <form action="{% url 'delete_review' review.id %}" method="post" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" style="background:none;border:none;color:red;">Supprimer</button>
-                        </form>
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Aucune critique pour le moment.</p>
-    {% endif %}
+  <h2>Flux</h2>
+  {% if posts %}
+    <ul>
+      {% for post in posts %}
+        {% if post.content_type == 'TICKET' %}
+          <li>
+            <strong>Billet : {{ post.title }}</strong><br>
+            {{ post.content|linebreaks }}<br>
+            <small>Posté par {{ post.author.username }} le {{ post.created_at|date:"d/m/Y H:i" }}</small><br>
+            {% if post.image %}
+              <img src="{{ post.image.url }}" alt="Image du ticket" style="max-width: 300px;">
+            {% endif %}
+            {% if post.author == user %}
+              <a href="{% url 'edit_ticket' post.id %}">Modifier</a>
+              <form action="{% url 'delete_ticket' post.id %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" style="background:none;border:none;color:red;">Supprimer</button>
+              </form>
+            {% endif %}
+            <br><a href="{% url 'create_review_for_ticket' post.id %}">Ajouter une critique</a>
+          </li>
+        {% elif post.content_type == 'REVIEW' %}
+          <li>
+            <strong>Critique : {{ post.headline }}</strong> ({{ post.rating }}/5)<br>
+            {{ post.body|linebreaks }}<br>
+            <small>Par {{ post.author.username }} le {{ post.created_at|date:"d/m/Y H:i" }}</small><br>
+            {% if post.author == user %}
+              <a href="{% url 'edit_review' post.id %}">Modifier</a>
+              <form action="{% url 'delete_review' post.id %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" style="background:none;border:none;color:red;">Supprimer</button>
+              </form>
+            {% endif %}
+          </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Aucun contenu à afficher pour le moment.</p>
+  {% endif %}
 {% endblock %}

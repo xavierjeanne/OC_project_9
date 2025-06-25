@@ -29,7 +29,8 @@ class Review(models.Model):
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
                                related_name='reviews')
-    time_created = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class UserFollows(models.Model):

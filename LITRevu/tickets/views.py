@@ -1,19 +1,33 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import ReviewForm, TicketForm, UserFollowsForm
-
-
+from django.db import models
+from django.db.models import Value
+from django.db.models.functions import Now
 from .models import Ticket, Review, UserFollows
 
 
 @login_required
 def home(request):
-    tickets = Ticket.objects.all()
-    reviews = Review.objects.all()
-    return render(request, 'tickets/home.html', {
-        'tickets': tickets,
-        'reviews': reviews,
-    })
+    user = request.user
+    followed_users = UserFollows.objects.filter(follower=user).values_list('followed', flat=True)
+
+    tickets = Ticket.objects.filter(
+        models.Q(author__in=followed_users) | models.Q(author=user)
+    ).annotate(content_type=Value('TICKET', output_field=models.CharField()))
+
+    reviews = Review.objects.filter(
+        models.Q(author__in=followed_users) |
+        models.Q(author=user) |
+        models.Q(ticket__author=user)
+    ).annotate(content_type=Value('REVIEW', output_field=models.CharField()))
+
+    posts = sorted(
+        list(tickets) + list(reviews),
+        key=lambda post: post.created_at,
+        reverse=True
+    )
+    return render(request, "tickets/home.html", {"posts": posts})
 
 
 @login_required
