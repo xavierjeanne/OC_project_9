@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .forms import ReviewForm, TicketForm
+from .forms import ReviewForm, TicketForm, UserFollowsForm
 
-from .models import Ticket, Review
+
+from .models import Ticket, Review, UserFollows
 
 
 @login_required
@@ -115,3 +116,39 @@ def delete_review(request, review_id):
         review.delete()
         return redirect('home')
     return render(request, 'tickets/review_confirm_delete.html', {'review': review})
+
+
+@login_required
+def follow_user(request):
+    message = ''
+    if request.method == 'POST':
+        form = UserFollowsForm(request.POST)
+        if form.is_valid():
+            user_to_follow = form.cleaned_data["followed"]
+            if user_to_follow == request.user:
+                message = "Vous ne pouvez pas vous suivre vous-même."
+            elif UserFollows.objects.filter(follower=request.user, followed=user_to_follow).exists():
+                message = "Vous suivez déjà cet utilisateur."
+            else:
+                UserFollows.objects.create(follower=request.user, followed=user_to_follow)
+                return redirect("follows")
+    else:
+        form = UserFollowsForm()
+        
+    following = UserFollows.objects.filter(follower=request.user)
+    followers = UserFollows.objects.filter(followed=request.user)
+
+    return render(request, "tickets/follows_view.html", {
+        "form": form,
+        "following": following,
+        "followers": followers,
+        "message": message
+    })
+    
+    
+@login_required
+def unfollow_view(request, followed_id):
+    relation = UserFollows.objects.filter(follower=request.user, followed__id=followed_id).first()
+    if request.method == "POST" and relation:
+        relation.delete()
+    return redirect("follows")

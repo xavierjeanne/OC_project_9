@@ -59,7 +59,8 @@ urlpatterns = [
     path('ticket/<int:ticket_id>/review/',
          tickets.views.create_review_for_ticket,
          name='create_review_for_ticket'),
-
+    path("follows/", tickets.views.follow_user, name="follows"),
+    path("unfollow/<int:followed_id>/", tickets.views.unfollow_view, name="unfollow"),
 ]
 
 if settings.DEBUG:
