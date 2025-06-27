@@ -1,26 +1,63 @@
+{% load static tailwind_tags %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Mon site{% endblock %}</title>
+    {% tailwind_css %}
 </head>
 <body>
-    <header>
-        <h1>Bienvenue</h1>
-    </header>
-
-    <main>
-        {% block content %}
-        Contenu par défaut
-        {% endblock %}
+    <header class="flex items-center justify-between px-6 py-4  bg-white-100 shadow border-b border-gray-300 relative">
+        
+        <div class="w-1/3">
+            <a href="{% url 'home' %}"><img src="{% static 'images/logo.png' %}" alt="LITRevu" class="h-12"></a>
+        </div>
+      
+        
+        <div class="w-1/3 flex justify-center">
+          
+        </div>
+      
         {% if user.is_authenticated %}
-            <p>Vous êtes connecté en tant que {{ request.user }}.</p>
-                <form action="{% url 'logout' %}" method="post">
-                    {% csrf_token %}
-                        <button type="submit">Se déconnecter</button>
-                </form>
+            <nav id="menu" class="hidden md:flex w-1/3 justify-end space-x-6">
+                <a href="{% url 'home' %}" class="text-gray-700 hover:text-blue-600 font-semibold">Accueil</a>
+                <a href="" class="text-gray-700 hover:text-blue-600 font-semibold">À propos</a>
+                <a href="" class="text-gray-700 hover:text-blue-600 font-semibold">Contact</a>
+            </nav>
+            
+            
+            <button id="menu-toggle" class="md:hidden text-gray-700 focus:outline-none" aria-label="Toggle menu">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+            </button>
+            
+            
+            <nav id="mobile-menu" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center space-y-8 text-2xl font-semibold text-gray-700 hidden">
+                <a href="{% url 'home' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" onclick="closeMenu()">Accueil</a>
+                <a href="" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" onclick="closeMenu()">À propos</a>
+                <a href="" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" onclick="closeMenu()">Contact</a>
+                <button onclick="closeMenu()" class="mt-12 px-6 py-2 border border-gray-400 rounded hover:bg-gray-200">Fermer</button>
+            </nav>
         {% endif %}
-        <p>Pas encore membre ? <a href="{% url 'signup' %}">Inscrivez-vous maintenant !</a></p>
+    </header>
+      
+
+    <main class="bg-gray-300 min-h-screen">
+        <div class="container mx-auto  px-4 pt-8 pb-8">
+            {% block content %}
+    
+            {% endblock %}
+        </div>
     </main>
+    <footer class="bg-white-100 shadow border-t border-gray-300">
+        <div class="container mx-auto py-8">
+            <p class="text-center text-gray-500">LITRevu &copy; 2025</p>
+        </div>
+    </footer> 
+    <script src="{% static 'js/app.js' %}"></script>
 </body>
 </html>
