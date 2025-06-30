@@ -26,12 +26,31 @@
                 <a href="{% url 'home' %}" class="text-gray-700 hover:text-blue-600 font-semibold">Flux</a>
                 <a href="{% url 'create_ticket' %}" class="text-gray-700 hover:text-blue-600 font-semibold">Posts</a>
                 <a href="{% url 'follows' %}" class="text-gray-700 hover:text-blue-600 font-semibold">Abonnements</a>
-                <form method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="text-gray-700 cursor-pointer hover:text-blue-600 font-semibold focus:outline-none">
-                        Déconnexion
+                <div class="relative group">
+                    <button
+                        class="flex items-center focus:outline-none"
+                        id="profile-menu-button"
+                    >
+                        <!-- Icône utilisateur -->
+                        <img src="{% static 'images/utilisateur.png' %}" alt="profil" class="cursor-pointer" width="25">
                     </button>
-                </form>
+            
+                    <!-- Menu déroulant -->
+                    <div
+                        class="absolute right-0 mt-2 w-70 bg-white border border-gray-300 rounded shadow-lg opacity-0 invisible group-hover:visible group-hover:opacity-100 transition duration-300"
+                    >
+                        <span class="block px-4 py-2 text-gray-700 font-semibold">{{ user.username }}</span>
+                        <a href="{% url 'password_change' %}" class="block px-4 py-2 text-gray-700 hover:text-blue-600 font-semibold">
+                            Changer mot de passe
+                        </a>
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="w-full text-left block px-4 py-2 text-gray-700 hover:text-blue-600 font-semibold">
+                                Déconnexion
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </nav>
             
             
@@ -48,6 +67,7 @@
                 <a href="{% url 'home' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" onclick="closeMenu()">Flux</a>
                 <a href="{% url 'create_ticket' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" onclick="closeMenu()">Posts</a>
                 <a href="{% url 'follows' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" onclick="closeMenu()">Abonnements</a>
+                <a href="{% url 'password_change' %}" class="block px-4 py-2 text-gray-700 hover:text-blue-600 font-semibold" onclick="closeMenu()">Changer mot de passe</a>
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
                     <button type="submit" class="text-gray-700 hover:text-blue-600 font-semibold cursor-pointer focus:outline-none">

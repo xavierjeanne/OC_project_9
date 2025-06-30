@@ -1,13 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <p>Vous êtes connecté, {{ user.username }} !</p>
-
-  <a href="{% url 'password_change' %}">Changer de mot de passe</a>
-  <a href="{% url 'create_ticket' %}">Créer un billet</a>
-  <a href="{% url 'create_ticket_review' %}">Créer un ticket + critique</a>
-  <a href="{% url 'follows' %}">Gérer vos abonnements</a>
-
   <h2>Flux</h2>
   {% if posts %}
     <ul>
