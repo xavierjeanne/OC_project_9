@@ -24,7 +24,7 @@
         {% if user.is_authenticated %}
             <nav id="menu" class="hidden md:flex w-1/3 justify-end space-x-6">
                 <a href="{% url 'home' %}" class="text-gray-700 hover:text-blue-600 font-semibold">Flux</a>
-                <a href="{% url 'create_ticket' %}" class="text-gray-700 hover:text-blue-600 font-semibold">Posts</a>
+                <a href="{% url 'posts' %}" class="text-gray-700 hover:text-blue-600 font-semibold">Posts</a>
                 <a href="{% url 'follows' %}" class="text-gray-700 hover:text-blue-600 font-semibold">Abonnements</a>
                 <div class="relative group">
                     <button
@@ -65,7 +65,7 @@
             
             <nav id="mobile-menu" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center space-y-8 text-2xl font-semibold text-gray-700 hidden">
                 <a href="{% url 'home' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" onclick="closeMenu()">Flux</a>
-                <a href="{% url 'create_ticket' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" onclick="closeMenu()">Posts</a>
+                <a href="{% url 'posts' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" onclick="closeMenu()">Posts</a>
                 <a href="{% url 'follows' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" onclick="closeMenu()">Abonnements</a>
                 <a href="{% url 'password_change' %}" class="block px-4 py-2 text-gray-700 hover:text-blue-600 font-semibold" onclick="closeMenu()">Changer mot de passe</a>
                 <form method="post" action="{% url 'logout' %}">

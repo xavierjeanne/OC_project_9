@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from .forms import ReviewForm, TicketForm, UserFollowsForm
 from django.db import models
 from django.db.models import Value
-from django.db.models.functions import Now
 from .models import Ticket, Review, UserFollows
 
 
@@ -141,10 +140,12 @@ def follow_user(request):
             user_to_follow = form.cleaned_data["followed"]
             if user_to_follow == request.user:
                 message = "Vous ne pouvez pas vous suivre vous-même."
-            elif UserFollows.objects.filter(follower=request.user, followed=user_to_follow).exists():
+            elif UserFollows.objects.filter(follower=request.user,
+                                            followed=user_to_follow).exists():
                 message = "Vous suivez déjà cet utilisateur."
             else:
-                UserFollows.objects.create(follower=request.user, followed=user_to_follow)
+                UserFollows.objects.create(follower=request.user,
+                                           followed=user_to_follow)
                 return redirect("follows")
     else:
         form = UserFollowsForm()
@@ -166,3 +167,24 @@ def unfollow_view(request, followed_id):
     if request.method == "POST" and relation:
         relation.delete()
     return redirect("follows")
+
+
+@login_required
+def posts(request):
+    user = request.user
+
+    tickets = Ticket.objects.filter(
+        author=user
+    ).annotate(content_type=Value('TICKET', output_field=models.CharField()))
+
+    reviews = Review.objects.filter(
+        author=user
+    ).annotate(content_type=Value('REVIEW', output_field=models.CharField()))
+
+    posts = sorted(
+        list(tickets) + list(reviews),
+        key=lambda post: post.created_at,
+        reverse=True
+    )
+
+    return render(request, "tickets/posts.html", {"posts": posts})

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for post in posts %}
+        {% if post.content_type == "TICKET" %}
+            <h2>Ticket: {{ post.title }}</h2>
+            <p>{{ post.description }}</p>
+        {% elif post.content_type == "REVIEW" %}
+            <h2>Review by you</h2>
+            <p>{{ post.comment }}</p>
+            <h3>Ticket associé :</h3>
+            <p>{{ post.ticket.title }}</p>
+            <p>{{ post.ticket.description }}</p>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
