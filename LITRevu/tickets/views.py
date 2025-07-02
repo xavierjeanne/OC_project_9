@@ -177,10 +177,13 @@ def posts(request):
         author=user
     ).annotate(content_type=Value('TICKET', output_field=models.CharField()))
 
-    reviews = Review.objects.filter(
-        author=user
-    ).annotate(content_type=Value('REVIEW', output_field=models.CharField()))
+    reviews = Review.objects.filter(author=user).annotate(
+        content_type=Value('REVIEW', output_field=models.CharField())
+    )
 
+    tickets = Ticket.objects.filter(author=user).annotate(
+        content_type=Value('TICKET', output_field=models.CharField())
+    )
     posts = sorted(
         list(tickets) + list(reviews),
         key=lambda post: post.created_at,

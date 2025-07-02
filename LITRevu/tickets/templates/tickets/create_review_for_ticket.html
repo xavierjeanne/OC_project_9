@@ -1,17 +1,49 @@
-
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 
 {% block content %}
-<h2>Créer une critique pour le ticket : {{ ticket.title }}</h2>
-<p>{{ ticket.content }}</p>
-{% if ticket.image %}
-    <img src="{{ ticket.image.url }}" alt="Image du ticket" style="max-width:200px;">
-{% endif %}
+<div class="flex items-center justify-center w-full min-h-[80vh] px-40">
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Publier la critique</button>
-</form>
+    <div class="bg-white shadow-lg rounded-lg p-10 max-w-2xl w-full">
+        
+        <h1 class="text-3xl font-semibold mb-6 text-center">
+            Créer une critique pour le billet :
+        </h1>
+
+        <p class="text-lg font-medium">{{ ticket.title }}</p>
+        <p >{{ ticket.content|linebreaks }}</p>
+
+        {% if ticket.image %}
+            <img src="{{ ticket.image.url }}" alt="Image du ticket" class="mb-6 max-w-xs rounded shadow mt-5">
+        {% endif %}
+
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            {% for field in form %}
+                <div>
+                    {{ field.label_tag }}
+                    {{ field|add_class:"w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-600" }}
+                    
+                    {% if field.errors %}
+                        <p class="text-red-600 text-sm mt-1">
+                            {{ field.errors|striptags }}
+                        </p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            {% if form.non_field_errors %}
+                <div class="text-red-600 text-left mb-4">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <button type="submit" class="w-full cursor-pointer px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700 transition">
+                Publier la critique
+            </button>
+        </form>
+    </div>
+</div>
 {% endblock %}
-

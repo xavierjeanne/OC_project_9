@@ -1,10 +1,48 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 
 {% block content %}
-  <h2>{% if form.instance.pk %}Modifier{% else %}Créer{% endif %} un billet</h2>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Valider</button>
-  </form>
+<div class="flex items-center justify-center w-full min-h-[80vh] px-4">
+  <div class="bg-white shadow-lg rounded-lg p-10 max-w-2xl w-full">
+    <h1 class="text-3xl font-semibold mb-8 text-center">
+      {% if form.instance.pk %}
+        Modifier un billet
+      {% else %}
+        Créer un billet
+      {% endif %}
+    </h1>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-8">
+      {% csrf_token %}
+
+      {% for field in form %}
+        <div class="mb-4">
+          {{ field.label_tag }}
+          {{ field|add_class:"w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-600" }}
+          {% if field.errors %}
+            <p class="text-red-600 text-sm mt-1">
+              {{ field.errors|striptags }}
+            </p>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      {% if form.non_field_errors %}
+        <div class="text-red-600 text-left mb-4">
+          {% for error in form.non_field_errors %}
+            <p>{{ error }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <button type="submit" class="w-full cursor-pointer px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700 transition">
+        {% if form.instance.pk %}
+          Modifier
+        {% else %}
+          Créer
+        {% endif %}
+      </button>
+    </form>
+  </div>
+</div>
 {% endblock %}
