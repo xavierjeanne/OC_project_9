@@ -13,7 +13,7 @@ class Ticket(models.Model):
         upload_to='ticket_images/',
         null=True,
         blank=True
-    ) 
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

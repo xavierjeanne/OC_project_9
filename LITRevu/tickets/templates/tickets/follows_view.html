@@ -10,23 +10,36 @@
 
     <form method="post" class="space-y-6">
       {% csrf_token %}
-      {% for field in form %}
-        <div>
-          {{ field.label_tag}}
-          {{ field|add_class:"w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600 transition" }}
-        </div>
-      {% endfor %}
+      <div>
+          
+          {{ form.followed_username.label_tag }}
+          {{ form.followed_username|add_class:"w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600 transition"|attr:"id:id_followed_username_autocomplete" }}
+         
+          <div id="autocomplete-suggestions" class="relative">
+              <div class="absolute bg-white border border-gray-200 rounded-lg shadow-md z-10 w-full mt-1" style="display: none;"></div>
+          </div>
+          
+          {% if form.followed_username.errors %}
+              <div class="text-red-600 text-sm mt-2">
+                  {% for error in form.followed_username.errors %}
+                      <p>{{ error }}</p>
+                  {% endfor %}
+              </div>
+          {% endif %}
+      </div>
 
+     
       {% if message %}
-        <div class="text-red-600 text-sm mt-2">
+      <div class="text-red-600 text-sm mt-2">
           <p>{{ message }}</p>
-        </div>
+      </div>
       {% endif %}
 
       <button type="submit" class="cursor-pointer w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition duration-200">
-        S'abonner
+          S'abonner
       </button>
-    </form>
+  </form>
+
 
     <div class="mt-10 space-y-8">
       
@@ -62,5 +75,63 @@
   </div>
 
 </div>
+{% endblock %}
+{% block extra_js %}
+<script>
+    const usernameInput = document.getElementById('id_followed_username_autocomplete');
+    const suggestionsWrapper = document.getElementById('autocomplete-suggestions');
+    const suggestionsContainer = suggestionsWrapper.querySelector('div');
+    const messageContainer = document.querySelector('.text-red-600.text-sm.mt-2');
+    let debounceTimeout;
+    
+    usernameInput.addEventListener('input', function() {
+        clearTimeout(debounceTimeout);
+        const query = this.value;
+        if (messageContainer) { 
+            messageContainer.textContent = ''; 
+                              
+        }
+        if (query.length < 2) {
+            suggestionsContainer.innerHTML = '';
+            suggestionsContainer.style.display = 'none';
+            return;
+        }
 
+        debounceTimeout = setTimeout(() => {
+            fetch("{% url 'search_users' %}?q=" + encodeURIComponent(query))
+                .then(response => response.json())
+                .then(data => {
+                    suggestionsContainer.innerHTML = '';
+                    if (data.length > 0) {
+                        data.forEach(username => {
+                            const suggestionItem = document.createElement('div');
+                            suggestionItem.classList.add('px-4', 'py-2', 'cursor-pointer', 'hover:bg-gray-100');
+                            suggestionItem.textContent = username;
+                            suggestionItem.addEventListener('click', () => {
+                                usernameInput.value = username;
+                                suggestionsContainer.innerHTML = '';
+                                suggestionsContainer.style.display = 'none';
+                            });
+                            suggestionsContainer.appendChild(suggestionItem);
+                        });
+                        suggestionsContainer.style.display = 'block';
+                    } else {
+                        suggestionsContainer.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching autocomplete suggestions:', error);
+                    suggestionsContainer.style.display = 'none';
+                });
+        }, 300);
+    });
+
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!usernameInput.contains(event.target) && !suggestionsWrapper.contains(event.target)) {
+            suggestionsContainer.innerHTML = '';
+            suggestionsContainer.style.display = 'none';
+        }
+    });
+</script>
 {% endblock %}

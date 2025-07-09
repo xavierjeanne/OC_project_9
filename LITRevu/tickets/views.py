@@ -4,12 +4,16 @@ from .forms import ReviewForm, TicketForm, UserFollowsForm
 from django.db import models
 from django.db.models import Value
 from .models import Ticket, Review, UserFollows
+from django.http import JsonResponse
+from django.contrib.auth import get_user_model
 
 
 @login_required
 def home(request):
     user = request.user
-    followed_users = UserFollows.objects.filter(follower=user).values_list('followed', flat=True)
+    followed_users = UserFollows.objects.filter(
+        follower=user).values_list('followed',
+                                   flat=True)
 
     tickets = Ticket.objects.filter(
         models.Q(author__in=followed_users) | models.Q(author=user)
@@ -18,7 +22,8 @@ def home(request):
     reviews = Review.objects.filter(
         models.Q(author__in=followed_users) |
         models.Q(author=user) |
-        models.Q(ticket__author=user)
+        models.Q(ticket__author=user) |
+        models.Q(ticket__author__in=followed_users)
     ).annotate(content_type=Value('REVIEW', output_field=models.CharField()))
 
     posts = sorted(
@@ -74,8 +79,9 @@ def edit_ticket(request, ticket_id):
             return redirect('home')
     else:
         form = TicketForm(instance=ticket)
-    
-    return render(request, 'tickets/ticket_form.html', {'form': form, 'ticket': ticket})
+
+    return render(request, 'tickets/ticket_form.html', {'form': form,
+                                                        'ticket': ticket})
 
 
 @login_required
@@ -128,28 +134,38 @@ def delete_review(request, review_id):
     if request.method == 'POST':
         review.delete()
         return redirect('home')
-    return render(request, 'tickets/review_confirm_delete.html', {'review': review})
+    return render(request,
+                  'tickets/review_confirm_delete.html',
+                  {'review': review})
 
 
 @login_required
 def follow_user(request):
     message = ''
+    User = get_user_model()
     if request.method == 'POST':
         form = UserFollowsForm(request.POST)
         if form.is_valid():
-            user_to_follow = form.cleaned_data["followed"]
-            if user_to_follow == request.user:
-                message = "Vous ne pouvez pas vous suivre vous-même."
-            elif UserFollows.objects.filter(follower=request.user,
-                                            followed=user_to_follow).exists():
-                message = "Vous suivez déjà cet utilisateur."
+            username_to_follow = form.cleaned_data["followed_username"]
+            try:
+                user_to_follow = User.objects.get(username=username_to_follow)
+            except User.DoesNotExist:
+                message = "Cet utilisateur n'existe pas."
             else:
-                UserFollows.objects.create(follower=request.user,
-                                           followed=user_to_follow)
-                return redirect("follows")
+                if user_to_follow == request.user:
+                    message = "Vous ne pouvez pas vous suivre vous-même."
+                elif UserFollows.objects.filter(follower=request.user,
+                                                followed=user_to_follow
+                                                ).exists():
+                    message = "Vous suivez déjà cet utilisateur."
+                else:
+                    UserFollows.objects.create(follower=request.user,
+                                               followed=user_to_follow)
+                    return redirect("follows")
+
     else:
         form = UserFollowsForm()
-        
+
     following = UserFollows.objects.filter(follower=request.user)
     followers = UserFollows.objects.filter(followed=request.user)
 
@@ -159,11 +175,12 @@ def follow_user(request):
         "followers": followers,
         "message": message
     })
-    
-    
+
+
 @login_required
 def unfollow_view(request, followed_id):
-    relation = UserFollows.objects.filter(follower=request.user, followed__id=followed_id).first()
+    relation = UserFollows.objects.filter(follower=request.user,
+                                          followed__id=followed_id).first()
     if request.method == "POST" and relation:
         relation.delete()
     return redirect("follows")
@@ -191,3 +208,16 @@ def posts(request):
     )
 
     return render(request, "tickets/posts.html", {"posts": posts})
+
+
+@login_required
+def search_users(request):
+    query = request.GET.get('q', '')
+    users = []
+    if query:
+        User = get_user_model()
+        users = User.objects.filter(
+            models.Q(username__istartswith=query) |
+            models.Q(username__icontains=query)
+        ).values_list('username', flat=True)[:10]
+    return JsonResponse(list(users), safe=False)

@@ -31,21 +31,18 @@ class ReviewForm(forms.ModelForm):
             'headline': 'Titre',
             'body': 'Commentaire'
         }
-        
+
 
 class UserFollowsForm(forms.ModelForm):
+
+    followed_username = forms.CharField(
+        label='Utilisateur à suivre',
+        help_text='Commencez à taper un nom d\'utilisateur.',
+        max_length=150,
+        required=True,
+        widget=forms.TextInput(attrs={'autocomplete': 'off'})
+    )
+
     class Meta:
         model = UserFollows
-        fields = ['followed']
-        labels = {
-            'followed': 'Utilisateur à suivre'
-        }
-        help_texts = {
-            'followed': 'Sélectionnez l\'utilisateur que vous souhaitez suivre'
-        }
-        error_messages = {
-            'followed': {
-                'required': 'Veuillez sélectionner un utilisateur à suivre',
-                'invalid_choice': 'Choix d\'utilisateur non valide'
-            }
-        }
+        fields = ['followed_username']

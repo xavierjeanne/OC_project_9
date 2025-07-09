@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.closeMenu = function () {
         mobileMenu.classList.add('hidden');
       };
-  
+     
+      
   });
   
