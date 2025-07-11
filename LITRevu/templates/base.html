@@ -23,9 +23,9 @@
       
         {% if user.is_authenticated %}
             <nav id="menu" class="hidden md:flex w-1/3 justify-end space-x-6">
-                <a href="{% url 'home' %}" class="text-gray-700 hover:text-blue-600 font-semibold">Flux</a>
-                <a href="{% url 'posts' %}" class="text-gray-700 hover:text-blue-600 font-semibold">Posts</a>
-                <a href="{% url 'follows' %}" class="text-gray-700 hover:text-blue-600 font-semibold">Abonnements</a>
+                <a href="{% url 'home' %}" aria-label="Aller à la page d'accueil" class="text-gray-700 hover:text-blue-600 font-semibold">Flux</a>
+                <a href="{% url 'posts' %}" aria-label="Aller à la page posts" class="text-gray-700 hover:text-blue-600 font-semibold">Posts</a>
+                <a href="{% url 'follows' %}" aria-label="Aller à la page des abonnements" class="text-gray-700 hover:text-blue-600 font-semibold">Abonnements</a>
                 <div class="relative group">
                     <button
                         class="flex items-center focus:outline-none"
@@ -40,12 +40,12 @@
                         class="absolute right-0 mt-2 w-70 bg-white border border-gray-300 rounded shadow-lg opacity-0 invisible group-hover:visible group-hover:opacity-100 transition duration-300"
                     >
                         <span class="block px-4 py-2 text-gray-700 font-semibold">{{ user.username }}</span>
-                        <a href="{% url 'password_change' %}" class="block px-4 py-2 text-gray-700 hover:text-blue-600 font-semibold">
+                        <a href="{% url 'password_change' %}" aria-label="Changer de mot de passe" class="block px-4 py-2 text-gray-700 hover:text-blue-600 font-semibold">
                             Changer mot de passe
                         </a>
                         <form method="post" action="{% url 'logout' %}">
                             {% csrf_token %}
-                            <button type="submit" class="w-full text-left block px-4 py-2 text-gray-700 hover:text-blue-600 font-semibold">
+                            <button type="submit" aria-label="Déconnexion" class="w-full text-left block px-4 py-2 text-gray-700 hover:text-blue-600 font-semibold">
                                 Déconnexion
                             </button>
                         </form>
@@ -54,7 +54,7 @@
             </nav>
             
             
-            <button id="menu-toggle" class="md:hidden text-gray-700 focus:outline-none" aria-label="Toggle menu">
+            <button id="menu-toggle" aria-labek="Toggle menu" class="md:hidden text-gray-700 focus:outline-none" aria-label="Toggle menu">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="3" y1="12" x2="21" y2="12" />
                 <line x1="3" y1="6" x2="21" y2="6" />
@@ -64,17 +64,17 @@
             
             
             <nav id="mobile-menu" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center space-y-8 text-2xl font-semibold text-gray-700 hidden">
-                <a href="{% url 'home' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" onclick="closeMenu()">Flux</a>
-                <a href="{% url 'posts' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" onclick="closeMenu()">Posts</a>
-                <a href="{% url 'follows' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" onclick="closeMenu()">Abonnements</a>
-                <a href="{% url 'password_change' %}" class="block px-4 py-2 text-gray-700 hover:text-blue-600 font-semibold" onclick="closeMenu()">Changer mot de passe</a>
+                <a href="{% url 'home' %}" aria-label="Aller à la page d'accueil" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" onclick="closeMenu()">Flux</a>
+                <a href="{% url 'posts' %}" aria-label="Aller à la page posts" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" onclick="closeMenu()">Posts</a>
+                <a href="{% url 'follows' %}" aria-label="Aller à la page des abonnements" class="block px-4 py-2 text-gray-700 hover:bg-gray-100" onclick="closeMenu()">Abonnements</a>
+                <a href="{% url 'password_change' %}" aria-label="Changer de mot de passe" class="block px-4 py-2 text-gray-700 hover:text-blue-600 font-semibold" onclick="closeMenu()">Changer mot de passe</a>
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
-                    <button type="submit" class="text-gray-700 hover:text-blue-600 font-semibold cursor-pointer focus:outline-none">
+                    <button type="submit" aria-label="Déconnexion" class="text-gray-700 hover:text-blue-600 font-semibold cursor-pointer focus:outline-none">
                         Déconnexion
                     </button>
                 </form>
-                <button onclick="closeMenu()" class="mt-12 px-6 py-2 border border-gray-400 rounded hover:bg-gray-200">Fermer</button>
+                <button onclick="closeMenu()" aria-label="Fermer le menu" class="mt-12 px-6 py-2 border border-gray-400 rounded hover:bg-gray-200">Fermer</button>
             </nav>
         {% endif %}
     </header>

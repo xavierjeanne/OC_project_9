@@ -35,7 +35,7 @@
       </div>
       {% endif %}
 
-      <button type="submit" class="cursor-pointer w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition duration-200">
+      <button type="submit" aria-label="S'abonner" class="cursor-pointer w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition duration-200">
           S'abonner
       </button>
   </form>
@@ -51,7 +51,7 @@
               <span class="text-gray-700">{{ relation.followed.username }}</span>
               <form method="post" action="{% url 'unfollow' relation.followed.id %}">
                 {% csrf_token %}
-                <button type="submit" class="cursor-pointer text-red-600 hover:text-red-800 text-sm font-medium">Se désabonner</button>
+                <button type="submit" aria-label="Se désabonner" class="cursor-pointer text-red-600 hover:text-red-800 text-sm font-medium">Se désabonner</button>
               </form>
             </li>
           {% empty %}
