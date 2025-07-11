@@ -2,9 +2,9 @@
     {% if post.content_type == 'TICKET' %}
         <div class="flex justify-between mb-5">
             {% if is_personal %}
-                Vous avez publié un billet :
+                Vous avez publié un ticket :
             {% else %}
-                Billet publié par 
+                Ticket publié par 
                 {% if post.author == user %}
                     Vous
                 {% else %}
