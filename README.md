@@ -58,3 +58,9 @@ Suivez ces étapes pour configurer et exécuter le projet localement :
 
     L'application sera accessible à l'adresse `http://127.0.0.1:8000/`.
 
+6. **Créer un super utilisateur pour accéder a la partie admin : **
+
+    ```bash
+    python manage.py createsuperuser
+    ```
+    Suivez les instructions pour créer un nom d'utilisateur, une adresse e-mail et un mot de passe.

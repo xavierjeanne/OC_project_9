@@ -1,0 +1,81 @@
+<div>
+    {% if post.content_type == 'TICKET' %}
+        <div class="flex justify-between mb-5">
+            {% if is_personal %}
+                Vous avez publié un billet :
+            {% else %}
+                Billet publié par 
+                {% if post.author == user %}
+                    Vous
+                {% else %}
+                    {{ post.author.username }}
+                {% endif %}
+            {% endif %}
+            <small>{{ post.created_at|date:"d/m/Y H:i" }}</small>
+        </div>
+        <p><strong>{{ post.title }}</strong></p>
+        <p>{{ post.content|linebreaks }}</p>
+        {% if post.image %}
+            <img src="{{ post.image.url }}" alt="Image du ticket" style="max-width: 300px;" class="mt-5">
+        {% endif %}
+        <div class="flex justify-end mt-5">
+            {% if post.author == user %}
+                <a href="{% url 'edit_ticket' post.id %}" class="cursor-pointer px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700 transition mr-5">Modifier</a>
+                <a href="{% url 'delete_ticket' post.id %}" class="cursor-pointer px-6 py-3 bg-red-600 text-white rounded hover:bg-red-700 transition">
+                    Supprimer
+                </a>
+            {% endif %}
+        </div>
+    {% elif post.content_type == 'REVIEW' %}
+        <div class="flex justify-between mb-5">
+            {% if is_personal %}
+                Vous avez publié une critique
+            {% else %}
+                Critique publiée par
+                {% if post.author == user %}
+                    Vous
+                {% else %}
+                    {{ post.author.username }}
+                {% endif %}
+            {% endif %}
+            <small>{{ post.created_at|date:"d/m/Y H:i" }}</small>
+        </div>  
+        <p><strong>{{ post.headline }}</strong> -  
+            {% for i in "12345" %}
+                {% if i|add:'0' <= post.rating %}
+                    <span style="color:gold;">★</span>
+                {% else %}
+                    <span style="color:#ccc;">★</span>
+                {% endif %}
+            {% endfor %}
+        </p>
+        {{ post.body|linebreaks }}<br>
+
+        <div class="bg-gray-100 p-8 rounded-lg mt-5">
+            <div class="flex justify-between mb-5">
+                Ticket - 
+                {% if post.ticket.author == user %}
+                    Vous
+                {% else %}
+                    {{ post.ticket.author.username }}
+                {% endif %} 
+                <small>{{ post.ticket.created_at|date:"d/m/Y H:i" }}</small>
+            </div>
+            <p><strong>{{ post.ticket.title }}</strong></p>
+            <p>{{ post.ticket.content|linebreaks }}</p>
+            {% if post.ticket.image %}
+                <img src="{{ post.ticket.image.url }}" alt="Image du ticket" style="max-width: 300px;" class="mt-5">
+            {% endif %}
+        </div>
+
+        <div class="flex justify-end mt-5">
+            {% if post.author == user %}
+                <a href="{% url 'edit_review' post.id %}" class="cursor-pointer px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700 transition mr-5">Modifier</a>
+                <a href="{% url 'delete_review' post.id %}" class="cursor-pointer px-6 py-3 bg-red-600 text-white rounded hover:bg-red-700 transition">
+                    Supprimer
+                </a>   
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+<hr class="border-t border-gray-300 my-6">
