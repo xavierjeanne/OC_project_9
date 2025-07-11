@@ -18,6 +18,12 @@
         {% if post.image %}
             <img src="{{ post.image.url }}" alt="Image du ticket" style="max-width: 300px;" class="mt-5">
         {% endif %}
+        <div class="mt-5">
+            {% if not post.review_set.exists %}
+                <a href="{% url 'create_review_for_ticket' post.id %}" class="cursor-pointer px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Ajouter une critique</a>
+            {% endif %}
+
+        </div>
         <div class="flex justify-end mt-5">
             {% if post.author == user %}
                 <a href="{% url 'edit_ticket' post.id %}" class="cursor-pointer px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700 transition mr-5">Modifier</a>
@@ -67,7 +73,7 @@
                 <img src="{{ post.ticket.image.url }}" alt="Image du ticket" style="max-width: 300px;" class="mt-5">
             {% endif %}
         </div>
-
+       
         <div class="flex justify-end mt-5">
             {% if post.author == user %}
                 <a href="{% url 'edit_review' post.id %}" class="cursor-pointer px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700 transition mr-5">Modifier</a>

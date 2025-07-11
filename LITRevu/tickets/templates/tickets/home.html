@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="flex justify-center mb-10">
+    <a href="{% url 'create_ticket' %}" class="cursor-pointer px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700 transition mr-5">
+        Créer un billet
+    </a>
+    <a href="{% url 'create_ticket_review' %}" class="cursor-pointer px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+        Créer une critique
+    </a>
+</div>
 {% if posts %}
 <div class="flex items-center justify-center w-full min-h-[80vh] px-40">
     <div class="bg-white shadow-lg rounded-lg p-10 w-full">
-        <div class="flex justify-center mb-10">
-            <a href="{% url 'create_ticket' %}" class="cursor-pointer px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700 transition mr-5">
-                Créer un billet
-            </a>
-            <a href="{% url 'create_ticket_review' %}" class="cursor-pointer px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
-                Créer une critique
-            </a>
-        </div>
         <h1 class="text-3xl font-semibold mb-10 text-center">Flux</h1>
 
         {% for post in posts %}
