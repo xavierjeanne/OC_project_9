@@ -16,6 +16,7 @@ LITRevu est une application web basée sur Django qui permet aux utilisateurs de
 - Python 3.x
 - Django (version spécifiée dans `requirements.txt`)
 - HTML/CSS
+- NPM
 
 ## Installation
 
